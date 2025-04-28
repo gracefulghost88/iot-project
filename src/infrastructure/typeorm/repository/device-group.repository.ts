@@ -11,6 +11,18 @@ export class DeviceGroupRepository implements DeviceGroupOutputPort {
     private readonly deviceGroupRepository: Repository<DeviceGroupEntity>,
   ) {}
 
+  async findOne(serialNumber: string): Promise<DeviceGroup | null> {
+    const result = await this.deviceGroupRepository.findOne({
+      where: { serialNumber },
+    });
+
+    if (!result) {
+      return null;
+    }
+
+    return new DeviceGroupMapper(result).toDomain();
+  }
+
   async create(deviceGroup: DeviceGroup): Promise<DeviceGroup> {
     const result = await this.deviceGroupRepository.save(
       this.deviceGroupRepository.create(deviceGroup),

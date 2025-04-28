@@ -41,3 +41,24 @@ export class ALREADY_EXIST_DEVICE_GROUP {
   })
   message!: string;
 }
+
+export class NOT_EXIST_DEVICE_GROUP {
+  static readonly ErrorInfo = {
+    code: 'NOT_EXIST_DEVICE_GROUP',
+    message: 'device group does not exist.',
+  };
+
+  @ApiProperty({
+    description: NOT_EXIST_DEVICE_GROUP.ErrorInfo.code,
+    type: 'string',
+    example: NOT_EXIST_DEVICE_GROUP.ErrorInfo.code,
+  })
+  code!: string;
+
+  @ApiProperty({
+    description: NOT_EXIST_DEVICE_GROUP.ErrorInfo.message,
+    type: 'string',
+    example: NOT_EXIST_DEVICE_GROUP.ErrorInfo.message,
+  })
+  message!: string;
+}

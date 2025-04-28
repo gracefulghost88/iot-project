@@ -1,9 +1,10 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { DeviceGroupModule } from './presentation/device-group/device-group.module';
 import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from './infrastructure/framework/pipeline/validation.pipe';
 
 @Module({
   imports: [

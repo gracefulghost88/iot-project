@@ -4,11 +4,13 @@ import { CreateDeviceGroupUsecase } from '../../usecase/create-device-group.usec
 import DeviceGroupController from './device-group.controller';
 import { DeviceGroupRepository } from '../../infrastructure/typeorm/repository/device-group.repository';
 import { DeviceGroupEntity } from '../../infrastructure/typeorm/entity/device-group.entity';
+import { RemoveDeviceGroupUsecase } from '../../usecase/remove-device-group.usecase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DeviceGroupEntity])],
   providers: [
     CreateDeviceGroupUsecase,
+    RemoveDeviceGroupUsecase,
     {
       provide: 'DeviceGroupOutputPort',
       useClass: DeviceGroupRepository,
