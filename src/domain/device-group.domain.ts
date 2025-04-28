@@ -7,8 +7,11 @@ export class DeviceGroup {
   updatedAt: Date;
   devices?: Device[];
 
-  constructor(id: string, serialNumber: string) {
+  constructor(param: { serialNumber: string }) {
+    this.serialNumber = param.serialNumber;
+  }
+
+  setId(id: string) {
     this.id = id;
-    this.serialNumber = serialNumber;
   }
 }
