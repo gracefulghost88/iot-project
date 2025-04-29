@@ -21,6 +21,65 @@ afterAll(async () => {
 });
 
 describe('DevicesGroups E2E Test', () => {
+  describe('GET 장비 그룹 목록 조회', () => {
+    let createdDeviceGroups: RemoveDeviceGroupDto[] = [];
+
+    beforeAll(async () => {
+      const createDeviceGroupUsecase =
+        server.moduleRef?.get<CreateDeviceGroupUsecase>(
+          CreateDeviceGroupUsecase,
+        );
+      if (createDeviceGroupUsecase) {
+        const deviceGroup1 = await createDeviceGroupUsecase.execute({
+          serialNumber: 'A1',
+        });
+        const deviceGroup2 = await createDeviceGroupUsecase.execute({
+          serialNumber: 'A2',
+        });
+        const deviceGroup3 = await createDeviceGroupUsecase.execute({
+          serialNumber: 'A3',
+        });
+
+        createdDeviceGroups = [
+          { serialNumber: deviceGroup1.serialNumber },
+          { serialNumber: deviceGroup2.serialNumber },
+          { serialNumber: deviceGroup3.serialNumber },
+        ];
+      }
+    });
+
+    afterAll(async () => {
+      const removeDeviceGroupUsecase =
+        server.moduleRef?.get<RemoveDeviceGroupUsecase>(
+          RemoveDeviceGroupUsecase,
+        );
+
+      for (const deviceGroup of createdDeviceGroups) {
+        await removeDeviceGroupUsecase.execute(deviceGroup);
+      }
+    });
+
+    it.each`
+      testName      | responseStatus
+      ${'[200] Ok'} | ${200}
+    `('$testName', async ({ responseStatus }) => {
+      const response = await request(server.app.getHttpServer())
+        .get(`/devices-groups`)
+        .set('Content-Type', 'application/json')
+        .send();
+
+      expect(response.status).toBe(responseStatus);
+
+      if (response.status === 200) {
+        expect(response.body.msg).toBe('success');
+        expect(response.body.data).toHaveLength(3);
+        expect(response.body.data[0].serialNumber).toBe('A1');
+        expect(response.body.data[1].serialNumber).toBe('A2');
+        expect(response.body.data[2].serialNumber).toBe('A3');
+      }
+    });
+  });
+
   describe('POST 장비 그룹 등록', () => {
     describe('장비 그룹 신규 등록', () => {
       let removeDeviceGroupDto: RemoveDeviceGroupDto = null;

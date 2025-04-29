@@ -11,6 +11,13 @@ export class DeviceGroupRepository implements DeviceGroupOutputPort {
     private readonly deviceGroupRepository: Repository<DeviceGroupEntity>,
   ) {}
 
+  async findAll(): Promise<DeviceGroup[]> {
+    const result = await this.deviceGroupRepository.find();
+    return result.map((deviceGroup) =>
+      new DeviceGroupMapper(deviceGroup).toDomain(),
+    );
+  }
+
   async findOne(serialNumber: string): Promise<DeviceGroup | null> {
     const result = await this.deviceGroupRepository.findOne({
       where: { serialNumber },

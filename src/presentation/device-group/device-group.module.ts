@@ -5,10 +5,12 @@ import DeviceGroupController from './device-group.controller';
 import { DeviceGroupRepository } from '../../infrastructure/typeorm/repository/device-group.repository';
 import { DeviceGroupEntity } from '../../infrastructure/typeorm/entity/device-group.entity';
 import { RemoveDeviceGroupUsecase } from '../../usecase/remove-device-group.usecase';
+import { FindAllDeviceGroupUsecase } from '../../usecase/find-all-device-group.usecase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DeviceGroupEntity])],
   providers: [
+    FindAllDeviceGroupUsecase,
     CreateDeviceGroupUsecase,
     RemoveDeviceGroupUsecase,
     {
