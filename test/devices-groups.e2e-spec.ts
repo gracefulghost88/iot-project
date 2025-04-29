@@ -117,4 +117,52 @@ describe('DevicesGroups E2E Test', () => {
       );
     });
   });
+
+  describe('DELETE 장비 그룹 삭제', () => {
+    let removeDeviceGroupDto: RemoveDeviceGroupDto = null;
+
+    beforeAll(async () => {
+      const createDeviceGroupUsecase =
+        server.moduleRef?.get<CreateDeviceGroupUsecase>(
+          CreateDeviceGroupUsecase,
+        );
+      if (createDeviceGroupUsecase) {
+        const deviceGroup = await createDeviceGroupUsecase.execute({
+          serialNumber: 'A5',
+        });
+
+        removeDeviceGroupDto = {
+          serialNumber: deviceGroup.serialNumber,
+        } as unknown as RemoveDeviceGroupDto;
+      }
+    });
+
+    afterAll(async () => {
+      const removeDeviceGroupUsecase =
+        server.moduleRef?.get<RemoveDeviceGroupUsecase>(
+          RemoveDeviceGroupUsecase,
+        );
+
+      if (removeDeviceGroupDto !== null) {
+        await removeDeviceGroupUsecase.execute(removeDeviceGroupDto);
+      }
+    });
+
+    it.each`
+      testName                               | deviceGroupSerial | responseStatus
+      ${'[404] deviceGroup does not exist.'} | ${'A88'}          | ${404}
+      ${'[204] No content'}                  | ${'A5'}           | ${204}
+    `('$testName', async ({ deviceGroupSerial, responseStatus }) => {
+      const response = await request(server.app.getHttpServer())
+        .delete(`/devices-groups`)
+        .set('Content-Type', 'application/json')
+        .send({ deviceGroupSerial });
+
+      expect(response.status).toBe(responseStatus);
+
+      if (response.status === 204) {
+        removeDeviceGroupDto = null;
+      }
+    });
+  });
 });
