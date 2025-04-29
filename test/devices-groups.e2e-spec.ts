@@ -51,7 +51,6 @@ describe('DevicesGroups E2E Test', () => {
           expect(response.status).toBe(responseStatus);
 
           if (response.status === 400) {
-            console.log(response.body);
             expect(response.body).toEqual(errorInfo);
           } else if (response.status === 201) {
             expect(response.body.msg).toBe('success');
@@ -78,7 +77,7 @@ describe('DevicesGroups E2E Test', () => {
           );
         if (createDeviceGroupUsecase) {
           const deviceGroup = await createDeviceGroupUsecase.execute({
-            serialNumber: 'A5',
+            serialNumber: 'A7',
           });
 
           removeDeviceGroupDto = {
@@ -112,7 +111,6 @@ describe('DevicesGroups E2E Test', () => {
           expect(response.status).toBe(responseStatus);
 
           if (response.status === 400) {
-            console.log(response.body);
             expect(response.body).toEqual(errorInfo);
           }
         },
