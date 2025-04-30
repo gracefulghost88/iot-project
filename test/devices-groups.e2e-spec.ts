@@ -267,9 +267,9 @@ describe('DevicesGroups E2E Test', () => {
       ${'[204] No content'}                  | ${'A5'}           | ${204}
     `('$testName', async ({ deviceGroupSerial, responseStatus }) => {
       const response = await request(server.app.getHttpServer())
-        .delete(`/devices-groups`)
+        .delete(`/devices-groups/${deviceGroupSerial}`)
         .set('Content-Type', 'application/json')
-        .send({ deviceGroupSerial });
+        .send();
 
       expect(response.status).toBe(responseStatus);
 

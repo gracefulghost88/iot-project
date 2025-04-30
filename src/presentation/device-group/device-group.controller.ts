@@ -59,10 +59,10 @@ export default class DeviceGroupController {
     return new FindOneDeviceGroupResponseDto(deviceGroup);
   }
 
-  @Delete()
+  @Delete('/:deviceGroupSerial')
   @HttpCode(204)
   async removeDeviceGroup(
-    @Body() dto: RemoveDeviceGroupRequestDto,
+    @Param() dto: RemoveDeviceGroupRequestDto,
   ): Promise<void> {
     await this.removeDeviceGroupUsecase.execute(
       new RemoveDeviceGroupRequestMapper(dto).toDomain(),
