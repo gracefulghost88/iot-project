@@ -177,6 +177,60 @@ describe('DevicesGroups E2E Test', () => {
     });
   });
 
+  describe('GET 장비 그룹 조회', () => {
+    let createdDeviceGroup: RemoveDeviceGroupDto;
+
+    beforeAll(async () => {
+      const createDeviceGroupUsecase =
+        server.moduleRef?.get<CreateDeviceGroupUsecase>(
+          CreateDeviceGroupUsecase,
+        );
+      if (createDeviceGroupUsecase) {
+        const deviceGroup = await createDeviceGroupUsecase.execute({
+          serialNumber: 'A1',
+        });
+
+        createdDeviceGroup = {
+          serialNumber: deviceGroup.serialNumber,
+        } as unknown as RemoveDeviceGroupDto;
+      }
+    });
+
+    afterAll(async () => {
+      const removeDeviceGroupUsecase =
+        server.moduleRef?.get<RemoveDeviceGroupUsecase>(
+          RemoveDeviceGroupUsecase,
+        );
+
+      if (removeDeviceGroupUsecase) {
+        await removeDeviceGroupUsecase.execute(createdDeviceGroup);
+      }
+    });
+
+    it.each`
+      testName                               | deviceGroupSerial | responseStatus | expectedData
+      ${'[404] deviceGroup does not exist.'} | ${'A88'}          | ${404}         | ${null}
+      ${'[200] Ok'}                          | ${'A1'}           | ${200}         | ${{ serialNumber: 'A1' }}
+    `(
+      '$testName',
+      async ({ deviceGroupSerial, responseStatus, expectedData }) => {
+        const response = await request(server.app.getHttpServer())
+          .get(`/devices-groups/${deviceGroupSerial}`)
+          .set('Content-Type', 'application/json')
+          .send();
+
+        expect(response.status).toBe(responseStatus);
+
+        if (response.status === 200) {
+          expect(response.body.msg).toBe('success');
+          expect(response.body.data.serialNumber).toBe(
+            expectedData.serialNumber,
+          );
+        }
+      },
+    );
+  });
+
   describe('DELETE 장비 그룹 삭제', () => {
     let removeDeviceGroupDto: RemoveDeviceGroupDto = null;
 
